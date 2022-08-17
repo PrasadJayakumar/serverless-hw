@@ -1,0 +1,16 @@
+Resources:
+  ProfilesTable:
+    Type: 'AWS::DynamoDB::Table'
+    DeletionPolicy: Retain
+    Properties:
+      # Generate a name based on the stage
+      TableName: ${self:provider.environment.DYNAMODB_TABLE}
+      AttributeDefinitions:
+        - AttributeName: profileId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: profileId
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: ${self:custom.tableThroughput}
+        WriteCapacityUnits: ${self:custom.tableThroughput}

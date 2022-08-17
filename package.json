@@ -1,0 +1,14 @@
+{
+  "name": "profiles-api",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "serverless deploy --stage dev",
+    "remove": "serverless remove --stage dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "uuid": "^8.3.2"
+  }
+}

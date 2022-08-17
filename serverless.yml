@@ -1,0 +1,49 @@
+service: profiles-api
+frameworkVersion: '3'
+
+custom:
+  tableThroughputs:
+    prod: 2
+    default: 1
+  tableThroughput: ${self:custom.tableThroughputs.${sls:stage}, self:custom.tableThroughputs.default}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  environment:
+    DYNAMODB_TABLE: ${sls:stage}-profiles
+  httpApi:
+    cors: true
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - 'arn:aws:dynamodb:${aws:region}:*:table/${self:provider.environment.DYNAMODB_TABLE}'
+
+functions:
+  create:
+    handler: apis/create.main
+    events:
+      - httpApi:
+          path: /profiles
+          method: post
+
+  get:
+    handler: apis/get.main
+    events:
+      - httpApi:
+          path: /profiles/{id}
+          method: get
+
+resources:
+  # DynamoDB
+  - ${file(resources/dynamodb-table.yml)}
